@@ -1,5 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using OfficeNet.Domain.Contracts;
 using OfficeNet.Domain.Entities;
 using OfficeNet.Infrastructure.Context;
 
@@ -9,10 +11,14 @@ namespace OfficeNet.Service.Department
     {
         private readonly ApplicationDbContext _context;
         private readonly ILogger<DepartmentService> _logger;
-        public DepartmentService(ApplicationDbContext context, ILogger<DepartmentService> logger)
+        private readonly IMapper _mapper;   
+        private readonly ICurrentUserService _currentUserService;
+        public DepartmentService(ApplicationDbContext context, ILogger<DepartmentService> logger,IMapper mapper, ICurrentUserService currentUserService)
         {
             _context = context;
             _logger = logger;
+            _mapper = mapper;
+            _currentUserService = currentUserService;
         }
         public async Task<UsersDepartment> DeleteDepartmentAsync(UsersDepartment department)
         {
@@ -42,11 +48,18 @@ namespace OfficeNet.Service.Department
             throw new NotImplementedException();
         }
 
-        public async Task<UsersDepartment> SaveDepartmentAsync(UsersDepartment department)
+        //public async Task<UsersDepartment> SaveDepartmentAsync(UsersDepartment department)
+        public async Task<UsersDepartment> SaveDepartmentAsync(DepartmentDto department)
         {
+            
+            var entitydepartment = _mapper.Map<UsersDepartment>(department);
+            entitydepartment.CreatedBy = _currentUserService.GetUserId();
+            entitydepartment.CreatedOn = DateTime.Now;  
+            entitydepartment.ModifiedBy = _currentUserService.GetUserId();
+            entitydepartment.ModifiedOn = DateTime.Now;
             try
             {
-                await _context.UsersDepartments.AddAsync(department);
+                await _context.UsersDepartments.AddAsync(entitydepartment);
                 await _context.SaveChangesAsync();
                 _logger.LogInformation("Department data Save Successfully");
             }
@@ -55,7 +68,7 @@ namespace OfficeNet.Service.Department
                 _logger.LogError($"Some error occured{ex}");
                 throw new Exception($"An error occured{ex}");
             }
-            return department;
+            return entitydepartment;
         }
 
         public async Task<UsersDepartment> UpdateDepartmentAsync(UsersDepartment department)

@@ -1,26 +1,28 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using OfficeNet.Domain.Contracts;
 using OfficeNet.Domain.Entities;
 using OfficeNet.Exceptions;
 using OfficeNet.Extensions;
+using OfficeNet.Filters;
 using OfficeNet.Infrastructure.Context;
 using OfficeNet.Infrastructure.Mapping;
+using OfficeNet.Permissons;
+using OfficeNet.Service;
+using OfficeNet.Service.Department;
+using OfficeNet.Service.DiscussionForum;
+using OfficeNet.Service.OpinionPoll;
+using OfficeNet.Service.PlantService;
+using OfficeNet.Service.Roles;
+using OfficeNet.Service.Survey;
+using OfficeNet.Service.Thought;
 using OfficeNet.Service.TokenService;
 using OfficeNet.Service.UserService;
-using OfficeNet.Service;
-using OfficeNet.Service.Roles;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using OfficeNet.Domain.Contracts;
-using OfficeNet.Service.Survey;
-using OfficeNet.Filters;
-using OfficeNet.Service.PlantService;
-using OfficeNet.Service.Department;
-using OfficeNet.Service.OpinionPoll;
-using OfficeNet.Service.DiscussionForum;
-using OfficeNet.Service.Thought;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -93,6 +95,20 @@ builder.Services.AddIdentity<ApplicationUser, ApplicationRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddDefaultTokenProviders();
 
+
+///Auto Register Claims
+builder.Services.AddAuthorization(options =>
+{
+    options.FallbackPolicy = new AuthorizationPolicyBuilder()
+        .RequireAuthenticatedUser()
+        .Build();
+    //foreach (var permission in PolicyRegistrar.GetAllPermissions())
+    //{
+    //    options.AddPolicy(permission, policy =>
+    //        policy.RequireClaim("Permission", permission));
+    //}
+});
+
 //builder.Services.AddControllers(options =>
 //{
 //    options.Filters.Add<SetUserContextFilter>();  // Apply globally
@@ -115,8 +131,19 @@ builder.Services.ConfigureIdentity();
 builder.Services.ConfigureJwt(builder.Configuration);
 builder.Services.ConfigureCors();
 
+
+
 var app = builder.Build();
 
+//Configuring dynamic policies from database
+using (var scope = app.Services.CreateScope())
+{
+    var serviceProvider = scope.ServiceProvider;
+    var authorizationOptions = serviceProvider.GetRequiredService<Microsoft.Extensions.Options.IOptions<AuthorizationOptions>>().Value;
+
+    // 🔄 Register policies from DB
+    OfficeNet.Permissons.DynamicPolicyRegistrar.RegisterPermissionsFromDatabase(authorizationOptions, serviceProvider);
+}
 
 
 // Configure the HTTP request pipeline.

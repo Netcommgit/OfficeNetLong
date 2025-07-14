@@ -41,7 +41,6 @@ namespace OfficeNet.Controllers
             {
                 var entity = new UserRegisterRequest();
 
-                // ✅ Safe nullable check
                 if (request.DOB is DateOnly dob)
                 {
                     entity.DOB = new DateOnly(dob.Year, dob.Month, dob.Day);

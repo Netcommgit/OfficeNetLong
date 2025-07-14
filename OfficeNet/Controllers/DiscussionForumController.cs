@@ -19,8 +19,8 @@ namespace OfficeNet.Controllers
 
 
         [HttpPost("SaveDiscussionTopic")]
-        //[Authorize(Roles = "Admin,User")]
-        [Authorize]
+        [Authorize(Roles = "Admin,User")]
+        //[Authorize]
         public async Task<IActionResult> SaveDiscussionTopic(DiscussionTopic discussionTopic)
         {
             if (discussionTopic == null)

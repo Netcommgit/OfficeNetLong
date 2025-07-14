@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using OfficeNet.Domain.Contracts;
 using OfficeNet.Domain.Entities;
 using OfficeNet.Infrastructure.Context;
 //using OfficeNet.Migrations;
@@ -24,9 +25,10 @@ namespace OfficeNet.Controllers
             _departmentService = departmentService;
             _currentUserService = currentUserService;
         }
+        
+        [Authorize(Policy = "Department.Create")]
         [HttpPost("SaveDepartmentData")]
-        [Authorize]
-        public async Task<IActionResult> SaveDepartmentData(UsersDepartment department)
+        public async Task<IActionResult> SaveDepartmentData(DepartmentDto department)
         {
             if (department == null)
             {
@@ -34,10 +36,10 @@ namespace OfficeNet.Controllers
             }
             try
             {
-                department.CreatedBy = _currentUserService.GetUserId();
-                department.CreatedOn = DateTime.Now;
-                department.ModifiedBy = _currentUserService.GetUserId();
-                department.ModifiedOn = DateTime.Now;
+                //department.CreatedBy = _currentUserService.GetUserId();
+                //department.CreatedOn = DateTime.Now;
+                //department.ModifiedBy = _currentUserService.GetUserId();
+                //department.ModifiedOn = DateTime.Now;
                 var result = await _departmentService.SaveDepartmentAsync(department);
                 return Ok(result);
             }
@@ -47,7 +49,7 @@ namespace OfficeNet.Controllers
             }
         }
         [HttpPut("UpdateDepartment")]
-        [Authorize]
+        [Authorize(Policy = "Department.Update")]
         public async Task<IActionResult> UpdateDepartment(UsersDepartment department)
         {
             if (department == null || department.DeptID == null || department.DeptID == 0)

@@ -13,6 +13,8 @@ namespace OfficeNet.Infrastructure.Mapping
             CreateMap<UserRegisterRequest, ApplicationUser>();
             //CreateMap<ThoughtSaveModel, ThoughtOfDay>();
             CreateMap<ThoughtOfDay, ThoughtSaveModel>();
+            CreateMap<DepartmentDto, UsersDepartment>();
+                
         }
     }
 }

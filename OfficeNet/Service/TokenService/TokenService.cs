@@ -17,8 +17,9 @@ namespace OfficeNet.Service.TokenService
         private readonly double _expires;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ILogger<TokenService> _logger;
+        private readonly RoleManager<ApplicationRole> _roleManager;
 
-        public TokenService(IConfiguration configuration, UserManager<ApplicationUser> userManager, ILogger<TokenService> logger)
+        public TokenService(IConfiguration configuration, UserManager<ApplicationUser> userManager, ILogger<TokenService> logger,RoleManager<ApplicationRole> roleManager)
         {
             _userManager = userManager;
             var jwtSetting = configuration.GetSection("JwtSettings").Get<JwtSetting>();
@@ -30,6 +31,7 @@ namespace OfficeNet.Service.TokenService
             _validIssuer = jwtSetting.ValidIssuer;
             _validAudience = jwtSetting.ValidAudience;
             _expires = jwtSetting.Expires;
+            _roleManager = roleManager;
         }
 
         public async Task<string> GenerateToken(ApplicationUser user)
@@ -54,6 +56,17 @@ namespace OfficeNet.Service.TokenService
             };
             var roles = await _userManager.GetRolesAsync(user);
             claims.AddRange(roles.Select(role => new Claim(ClaimTypes.Role, role)));
+
+            foreach (var roleName in roles)
+            {
+                var role = await _roleManager.FindByNameAsync(roleName);
+                if (role != null)
+                {
+                    var roleClaims = await _roleManager.GetClaimsAsync(role);
+                    claims.AddRange(roleClaims.Where(c => c.Type == "Permission"));
+                }
+            }
+
             return claims;
         }
 

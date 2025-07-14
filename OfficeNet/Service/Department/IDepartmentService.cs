@@ -1,4 +1,5 @@
-﻿using OfficeNet.Domain.Entities;
+﻿using OfficeNet.Domain.Contracts;
+using OfficeNet.Domain.Entities;
 
 namespace OfficeNet.Service.Department
 {
@@ -7,7 +8,8 @@ namespace OfficeNet.Service.Department
         Task<List<UsersDepartment>> GetDepartmentAsync();
         Task<UsersDepartment> UpdateDepartmentAsync(UsersDepartment department);
         Task<UsersDepartment> DeleteDepartmentAsync(UsersDepartment department);
-        Task<UsersDepartment> SaveDepartmentAsync(UsersDepartment department);
+        //Task<UsersDepartment> SaveDepartmentAsync(UsersDepartment department);
+        Task<UsersDepartment> SaveDepartmentAsync(DepartmentDto department);
         Task<UsersDepartment> GetDepartmentById(int id);
     }
 }

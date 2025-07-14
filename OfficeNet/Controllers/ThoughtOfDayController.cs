@@ -30,11 +30,11 @@ namespace OfficeNet.Controllers
             try
             {
                 var result = await _thoughtService.SaveThought(thoughtOfDay);
-                if (flag == 0 && result.ThoughtID ==0)
+                if (flag == 0 && result.ThoughtID == 0)
                 {
                     return StatusCode(StatusCodes.Status500InternalServerError, "Failed to save thought of the day.");
                 }
-                if(result.ThoughtID == flag)
+                if (result.ThoughtID == flag)
                 {
                     return StatusCode(StatusCodes.Status200OK, new
                     {
@@ -72,5 +72,24 @@ namespace OfficeNet.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, $"Internal server error: {ex.Message}");
             }
         }
+
+        [HttpPost("TwoSum")]
+        public int[] TwoSum(int[] nums, int target)
+        {
+            Dictionary<int, int> map = new Dictionary<int, int>();
+
+            for (int i = 0; i < nums.Length; i++)
+            {
+                int complement = target - nums[i];
+                if (map.ContainsKey(complement))
+                {
+                    return new int[] { map[complement], i };  
+                }
+                map[nums[i]] = i;
+            }
+
+            throw new ArgumentException("No two sum solution");
+        }
+
     }
 }
