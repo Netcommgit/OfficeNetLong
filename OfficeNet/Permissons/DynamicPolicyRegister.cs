@@ -1,9 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using OfficeNet.Infrastructure.Context;
+using OfficeNet.Service.RoleAuthHandler;
 
 namespace OfficeNet.Permissons
 {
-    public static class DynamicPolicyRegistrar
+    public static class DynamicPolicyRegister
     {
         public static void RegisterPermissionsFromDatabase(AuthorizationOptions options, IServiceProvider serviceProvider)
         {
@@ -18,8 +19,10 @@ namespace OfficeNet.Permissons
 
             foreach (var permission in permissionClaims)
             {
+                //options.AddPolicy(permission, policy =>
+                //    policy.RequireClaim("Permission", permission));
                 options.AddPolicy(permission, policy =>
-                    policy.RequireClaim("Permission", permission));
+                    policy.Requirements.Add(new PermissionRequirement(permission)));
             }
         }
     }

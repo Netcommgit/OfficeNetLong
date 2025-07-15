@@ -89,7 +89,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 //    .AddEntityFrameworkStores<ApplicationDbContext>()
 //    .AddDefaultTokenProviders();
 //RegisteringService here
-builder.Services.AddScopedServicesByConvention(typeof(Program).Assembly);
+builder.Services.AddServicesByConvention(typeof(Program).Assembly);
 
 builder.Services.AddIdentity<ApplicationUser, ApplicationRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>()
@@ -140,9 +140,7 @@ using (var scope = app.Services.CreateScope())
 {
     var serviceProvider = scope.ServiceProvider;
     var authorizationOptions = serviceProvider.GetRequiredService<Microsoft.Extensions.Options.IOptions<AuthorizationOptions>>().Value;
-
-    // 🔄 Register policies from DB
-    OfficeNet.Permissons.DynamicPolicyRegistrar.RegisterPermissionsFromDatabase(authorizationOptions, serviceProvider);
+    OfficeNet.Permissons.DynamicPolicyRegister.RegisterPermissionsFromDatabase(authorizationOptions, serviceProvider);
 }
 
 

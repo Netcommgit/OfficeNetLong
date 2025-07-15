@@ -55,17 +55,17 @@ namespace OfficeNet.Service.TokenService
                 //new Claim(ClaimTypes.Role,"admin")   // added by ashsih 5 may 2025
             };
             var roles = await _userManager.GetRolesAsync(user);
-            claims.AddRange(roles.Select(role => new Claim(ClaimTypes.Role, role)));
+            //claims.AddRange(roles.Select(role => new Claim(ClaimTypes.Role, role)));
 
-            foreach (var roleName in roles)
-            {
-                var role = await _roleManager.FindByNameAsync(roleName);
-                if (role != null)
-                {
-                    var roleClaims = await _roleManager.GetClaimsAsync(role);
-                    claims.AddRange(roleClaims.Where(c => c.Type == "Permission"));
-                }
-            }
+            //foreach (var roleName in roles)
+            //{
+            //    var role = await _roleManager.FindByNameAsync(roleName);
+            //    if (role != null)
+            //    {
+            //        var roleClaims = await _roleManager.GetClaimsAsync(role);
+            //        claims.AddRange(roleClaims.Where(c => c.Type == "Permission"));
+            //    }
+            //}
 
             return claims;
         }

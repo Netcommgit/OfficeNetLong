@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using OfficeNet.Domain.Contracts;
 using OfficeNet.Service.RoleClaim;
@@ -18,6 +19,7 @@ namespace OfficeNet.Controllers
 
         
         [HttpGet("{roleId:long}")]
+        [Authorize]
         public async Task<IActionResult> GetClaims(long roleId)
         {
             try
@@ -33,6 +35,7 @@ namespace OfficeNet.Controllers
 
         
         [HttpPost]
+        [Authorize(Policy ="Claim.Create")]
         public async Task<IActionResult> AddClaim([FromBody] RoleClaimDto dto)
         {
             try
@@ -51,6 +54,7 @@ namespace OfficeNet.Controllers
 
         
         [HttpDelete]
+        [Authorize(Policy = "Claim.Delete")]
         public async Task<IActionResult> RemoveClaim(RoleClaimDto dto)
         {
             try
@@ -71,6 +75,7 @@ namespace OfficeNet.Controllers
         /// Creates a new role and assigns permissions to it.
         /// </summary>
         [HttpPost("CreateRoleWithClaims")]
+        [Authorize(Policy = "Claim.Create")]
         public async Task<IActionResult> CreateRoleWithClaims(RoleWithClaimsDto dto)
         {
             if (string.IsNullOrWhiteSpace(dto.RoleName) || dto.Permissions == null || !dto.Permissions.Any())
@@ -88,6 +93,7 @@ namespace OfficeNet.Controllers
         /// Adds permissions to an existing role.
         /// </summary>
         [HttpPost("AddPermissionsToRole")]
+        [Authorize(Policy = "Claim.Create")]
         public async Task<IActionResult> AddPermissionsToRole(AddRolePermissionsDto dto)
         {
             if (dto.RoleId <= 0 || dto.Permissions == null || !dto.Permissions.Any())
