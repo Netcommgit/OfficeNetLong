@@ -18,5 +18,11 @@
         public string RoleName { get; set; }
         public List<string> Permissions { get; set; }
     }
+    public class UserCalimDto
+    {
+        public long UserId { get; set; }
+        public string ClaimType { get; set; } = "Permission";
+        public string ClaimValue { get; set; }
+    }
 
 }

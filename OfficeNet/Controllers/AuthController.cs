@@ -174,7 +174,7 @@ namespace OfficeNet.Controllers
         }
 
         [HttpPost("AddRoleToUser")]
-        [Authorize(Roles = "admin")]
+        //[Authorize(Roles = "admin")]
         [Authorize]
         public async Task<IActionResult> AddRoleToUser(UserRole objUser)
         {
