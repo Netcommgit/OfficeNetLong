@@ -140,8 +140,8 @@ namespace OfficeNet.Service.UserService
             var refreshTokenHash = sha256.ComputeHash(Encoding.UTF8.GetBytes(refreshToken));
             user.RefreshToken = Convert.ToBase64String(refreshTokenHash);
             //user.RefreshTokenExpiryTime = DateTime.Now.AddDays(2);
-            user.RefreshTokenExpiryTime =  DateTime.Now.AddMinutes(2);
-            var exp = DateTime.Now.AddMinutes(2);
+            //user.RefreshTokenExpiryTime =  DateTime.Now.AddMinutes(2);
+            //var exp = DateTime.Now.AddMinutes(2);
             var result =  await _userManager.UpdateAsync(user);
             if (!result.Succeeded) {
                 var errors = string.Join(", ",result.Errors.Select(e => e.Description));
@@ -201,7 +201,8 @@ namespace OfficeNet.Service.UserService
                 var newRefreshToken = _tokenService.GenerateRefreshToken();
                 var newRefreshTokenHash = sha256.ComputeHash(Encoding.UTF8.GetBytes(newRefreshToken));
                 user.RefreshToken = Convert.ToBase64String(newRefreshTokenHash);
-                user.RefreshTokenExpiryTime = DateTime.Now.AddMinutes(2);
+                user.RefreshTokenExpiryTime = DateTime.Now.AddSeconds(3600);
+                //user.RefreshTokenExpiryTime = DateTime.Now.AddMinutes(2);
                 //var exp = DateTime.Now.AddMinutes(2);
                 var result = await _userManager.UpdateAsync(user);
 
