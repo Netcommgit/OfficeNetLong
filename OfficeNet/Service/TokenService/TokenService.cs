@@ -72,12 +72,24 @@ namespace OfficeNet.Service.TokenService
 
         private JwtSecurityToken GenerateTokenOptions(SigningCredentials signingCredentials , List<Claim> claims) 
         {
+            var issuedAt = DateTime.UtcNow;
+            claims.Add(new Claim(JwtRegisteredClaimNames.Iat,
+                         new DateTimeOffset(issuedAt).ToUnixTimeSeconds().ToString(),
+                         ClaimValueTypes.Integer64));
+            //return new JwtSecurityToken(
+            //    issuer: _validIssuer,
+            //    audience: _validAudience,
+            //    claims: claims,
+            //    expires: DateTime.Now.AddSeconds(_expires),
+            //    signingCredentials:signingCredentials
+            //);
             return new JwtSecurityToken(
                 issuer: _validIssuer,
                 audience: _validAudience,
                 claims: claims,
-                expires: DateTime.UtcNow.AddSeconds(_expires),
-                signingCredentials:signingCredentials
+                notBefore: issuedAt,
+                expires: issuedAt.AddSeconds(_expires),
+                signingCredentials: signingCredentials
             );
         }
 

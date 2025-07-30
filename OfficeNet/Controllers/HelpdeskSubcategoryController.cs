@@ -25,7 +25,7 @@ namespace OfficeNet.Controllers
             var createdSubCategory = await _helpdeskSubcategoryService.CreateSubCategoryAsync(subCategoryDto);
             return CreatedAtAction(nameof(GetSubCategoryById), new { id = createdSubCategory.SubCategoryID }, createdSubCategory);
         }
-        [HttpGet("{id}")]
+        [HttpGet("GetSubCategoryById{id}")]
         public async Task<IActionResult> GetSubCategoryById(int id)
         {
             var subCategory = await _helpdeskSubcategoryService.GetSubCategoryByIdAsync(id);
@@ -35,7 +35,7 @@ namespace OfficeNet.Controllers
             }
             return Ok(subCategory);
         }
-        [HttpDelete("{id}")]
+        [HttpDelete("DeleteSubCategory{id}")]
         public async Task<IActionResult> DeleteSubCategory(int id)
         {
             var result = await _helpdeskSubcategoryService.DeleteSubCategoryAsync(id);

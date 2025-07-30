@@ -7,6 +7,7 @@ using Microsoft.VisualBasic;
 using OfficeNet.Domain.Contracts;
 using OfficeNet.Domain.Entities;
 using OfficeNet.Service.TokenService;
+using System.Configuration;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -19,14 +20,16 @@ namespace OfficeNet.Service.UserService
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IMapper _mapper;
         private readonly ILogger<UserService> _logger;
+        private readonly IConfiguration _configuration;
 
-        public UserService(ITokenService tokenService, ICurrentUserService currentUserService, UserManager<ApplicationUser> userManager, IMapper mapper, ILogger<UserService> logger) 
+        public UserService(ITokenService tokenService, ICurrentUserService currentUserService, UserManager<ApplicationUser> userManager, IMapper mapper, ILogger<UserService> logger,IConfiguration configuration) 
         {
             _tokenService = tokenService;
             _currentUserService = currentUserService;
             _userManager = userManager;
             _mapper = mapper;
             _logger = logger;
+            _configuration = configuration;
         }
 
         public async Task<UserResponse> RegisterAsync(UserRegisterRequest request)
@@ -139,9 +142,13 @@ namespace OfficeNet.Service.UserService
             using var sha256 = SHA256.Create();
             var refreshTokenHash = sha256.ComputeHash(Encoding.UTF8.GetBytes(refreshToken));
             user.RefreshToken = Convert.ToBase64String(refreshTokenHash);
-            //user.RefreshTokenExpiryTime = DateTime.Now.AddDays(2);
+            var jwtSetting = _configuration.GetSection("JwtSettings").Get<JwtSetting>();
+            user.RefreshTokenExpiryTime = DateTime.UtcNow.AddSeconds(jwtSetting.Expires);
+           
+           
             //user.RefreshTokenExpiryTime =  DateTime.Now.AddMinutes(2);
             //var exp = DateTime.Now.AddMinutes(2);
+            //user.RefreshToken = refreshToken;
             var result =  await _userManager.UpdateAsync(user);
             if (!result.Succeeded) {
                 var errors = string.Join(", ",result.Errors.Select(e => e.Description));
@@ -190,7 +197,7 @@ namespace OfficeNet.Service.UserService
                 _logger.LogError($"Invalid refresh token");
                 throw new Exception($"Invalid refresh token");
             }
-            if (user.RefreshTokenExpiryTime <DateTime.Now)
+            if (user.RefreshTokenExpiryTime <DateTime.UtcNow)
             {
                 _logger.LogWarning("Refresh token expired for User ID:{UserId}",user.Id);
                 throw new Exception($"Refresh token expired");
@@ -201,7 +208,7 @@ namespace OfficeNet.Service.UserService
                 var newRefreshToken = _tokenService.GenerateRefreshToken();
                 var newRefreshTokenHash = sha256.ComputeHash(Encoding.UTF8.GetBytes(newRefreshToken));
                 user.RefreshToken = Convert.ToBase64String(newRefreshTokenHash);
-                user.RefreshTokenExpiryTime = DateTime.Now.AddSeconds(3600);
+                user.RefreshTokenExpiryTime = DateTime.UtcNow.AddSeconds(3600);
                 //user.RefreshTokenExpiryTime = DateTime.Now.AddMinutes(2);
                 //var exp = DateTime.Now.AddMinutes(2);
                 var result = await _userManager.UpdateAsync(user);
