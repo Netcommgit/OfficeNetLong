@@ -14,7 +14,12 @@ namespace OfficeNet.Infrastructure.Mapping
             //CreateMap<ThoughtSaveModel, ThoughtOfDay>();
             CreateMap<ThoughtOfDay, ThoughtSaveModel>();
             CreateMap<DepartmentDto, UsersDepartment>();
-                
+            CreateMap<HelpdeskDepartmentDto, HelpdeskDepartmentModel>();
+            CreateMap<HelpdeskDepartmentModel, HelpdeskDepartmentDto>();
+            CreateMap<HelpdeskCategoryDto, HelpdeskCategoryModel>();
+            CreateMap<HelpdeskCategoryModel, HelpdeskCategoryDto>();
+            CreateMap<HelpdeskSubcategoryDto, HelpdeskSubcategoryModel>();
+            CreateMap<HelpdeskSubcategoryModel, HelpdeskSubcategoryDto>();
         }
     }
 }

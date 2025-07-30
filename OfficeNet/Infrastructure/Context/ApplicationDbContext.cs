@@ -48,7 +48,10 @@ namespace OfficeNet.Infrastructure.Context
         public DbSet<DiscussionUser> DiscussionUsers { get; set; }
         public DbSet<DiscussionMessage> DiscussionMessages { get; set; }
         public DbSet<ThoughtOfDay> ThoughtsOfTheDay { get; set; }
-        public DbSet<HelpDeskDetail> HelpDeskDetails { get; set; }
+        //public DbSet<HelpDeskDetail> HelpDeskDetails { get; set; }
+        public DbSet<HelpdeskDepartmentModel> HelpdeskDepartments { get; set; }
+        public DbSet<HelpdeskCategoryModel> HelpdeskCategories { get; set; }
+        public DbSet<HelpdeskSubcategoryModel> HelpdeskSubcategories { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
@@ -78,12 +81,3 @@ namespace OfficeNet.Infrastructure.Context
 
     }
 }
-
-
-
-
-
-
-
-
-

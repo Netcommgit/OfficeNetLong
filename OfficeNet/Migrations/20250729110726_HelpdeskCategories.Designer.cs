@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using OfficeNet.Infrastructure.Context;
 
@@ -11,9 +12,11 @@ using OfficeNet.Infrastructure.Context;
 namespace OfficeNet.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250729110726_HelpdeskCategories")]
+    partial class HelpdeskCategories
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -978,44 +981,6 @@ namespace OfficeNet.Migrations
                     b.ToTable("HelpdeskDepartments");
                 });
 
-            modelBuilder.Entity("OfficeNet.Domain.Entities.HelpdeskSubcategoryModel", b =>
-                {
-                    b.Property<int>("SubCategoryID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("SubCategoryID"));
-
-                    b.Property<int>("CategoryID")
-                        .HasColumnType("int");
-
-                    b.Property<long?>("CreatedBy")
-                        .HasColumnType("bigint");
-
-                    b.Property<DateTime?>("CreatedOn")
-                        .HasColumnType("datetime");
-
-                    b.Property<long?>("ModifiedBy")
-                        .HasColumnType("bigint");
-
-                    b.Property<DateTime?>("ModifiedOn")
-                        .HasColumnType("datetime");
-
-                    b.Property<bool>("Status")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("SubCategoryName")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
-
-                    b.HasKey("SubCategoryID");
-
-                    b.HasIndex("CategoryID");
-
-                    b.ToTable("HelpdeskSubcategories");
-                });
-
             modelBuilder.Entity("OfficeNet.Domain.Entities.OpinionPollAnswer", b =>
                 {
                     b.Property<int>("OptionCount")
@@ -1565,17 +1530,6 @@ namespace OfficeNet.Migrations
                         .IsRequired();
 
                     b.Navigation("HelpdeskDepartment");
-                });
-
-            modelBuilder.Entity("OfficeNet.Domain.Entities.HelpdeskSubcategoryModel", b =>
-                {
-                    b.HasOne("OfficeNet.Domain.Entities.HelpdeskCategoryModel", "Category")
-                        .WithMany()
-                        .HasForeignKey("CategoryID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Category");
                 });
 
             modelBuilder.Entity("OfficeNet.Domain.Entities.OpinionPollOption", b =>
