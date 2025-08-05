@@ -208,7 +208,9 @@ namespace OfficeNet.Service.UserService
                 var newRefreshToken = _tokenService.GenerateRefreshToken();
                 var newRefreshTokenHash = sha256.ComputeHash(Encoding.UTF8.GetBytes(newRefreshToken));
                 user.RefreshToken = Convert.ToBase64String(newRefreshTokenHash);
-                user.RefreshTokenExpiryTime = DateTime.UtcNow.AddSeconds(3600);
+                var jwtSetting = _configuration.GetSection("JwtSettings").Get<JwtSetting>();
+                user.RefreshTokenExpiryTime = DateTime.UtcNow.AddSeconds(jwtSetting.Expires);
+                //user.RefreshTokenExpiryTime = DateTime.UtcNow.AddSeconds(3600);
                 //user.RefreshTokenExpiryTime = DateTime.Now.AddMinutes(2);
                 //var exp = DateTime.Now.AddMinutes(2);
                 var result = await _userManager.UpdateAsync(user);

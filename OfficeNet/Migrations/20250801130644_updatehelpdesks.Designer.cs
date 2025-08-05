@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using OfficeNet.Infrastructure.Context;
 
@@ -11,9 +12,11 @@ using OfficeNet.Infrastructure.Context;
 namespace OfficeNet.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250801130644_updatehelpdesks")]
+    partial class updatehelpdesks
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -767,7 +770,7 @@ namespace OfficeNet.Migrations
                         .HasColumnType("bigint");
 
                     b.Property<DateTime?>("CreatedOn")
-                        .HasColumnType("datetime");
+                        .HasColumnType("datetime2");
 
                     b.Property<int>("EmpId")
                         .HasColumnType("int");
@@ -790,7 +793,7 @@ namespace OfficeNet.Migrations
                         .HasColumnType("bigint");
 
                     b.Property<DateTime?>("ModifiedOn")
-                        .HasColumnType("datetime");
+                        .HasColumnType("datetime2");
 
                     b.Property<int?>("ParentId")
                         .HasColumnType("int");
@@ -920,30 +923,27 @@ namespace OfficeNet.Migrations
                         .HasColumnType("bigint");
 
                     b.Property<DateTime>("CreatedOn")
-                        .HasColumnType("datetime");
+                        .HasColumnType("datetime2");
 
                     b.Property<int>("DeptID")
                         .HasColumnType("int");
 
                     b.Property<string>("EscalationOneTime")
                         .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("EscalationOneUserID")
                         .HasColumnType("int");
 
                     b.Property<string>("EscalationThreeTime")
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("EscalationThree_UserID")
                         .HasColumnType("int");
 
                     b.Property<string>("EscalationTwoTime")
                         .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("EscalationTwoUserID")
                         .HasColumnType("int");
@@ -958,7 +958,7 @@ namespace OfficeNet.Migrations
                         .HasColumnType("bigint");
 
                     b.Property<DateTime?>("ModifiedOn")
-                        .HasColumnType("datetime");
+                        .HasColumnType("datetime2");
 
                     b.Property<int>("PlantID")
                         .HasColumnType("int");
@@ -1666,7 +1666,7 @@ namespace OfficeNet.Migrations
                         .IsRequired();
 
                     b.HasOne("OfficeNet.Domain.Entities.HelpDeskDetail", "HelpDeskDetail")
-                        .WithMany("AdminUsers")
+                        .WithMany()
                         .HasForeignKey("IssueID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1724,11 +1724,6 @@ namespace OfficeNet.Migrations
                         .HasForeignKey("SurveyId");
 
                     b.Navigation("Survey");
-                });
-
-            modelBuilder.Entity("OfficeNet.Domain.Entities.HelpDeskDetail", b =>
-                {
-                    b.Navigation("AdminUsers");
                 });
 
             modelBuilder.Entity("OfficeNet.Domain.Entities.OpinionPollTopic", b =>

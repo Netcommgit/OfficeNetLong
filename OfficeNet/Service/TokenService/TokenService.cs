@@ -75,7 +75,8 @@ namespace OfficeNet.Service.TokenService
             var issuedAt = DateTime.UtcNow;
             claims.Add(new Claim(JwtRegisteredClaimNames.Iat,
                new DateTimeOffset(issuedAt).ToUnixTimeSeconds().ToString(),
-               ClaimValueTypes.Integer64));
+               ClaimValueTypes.Integer64)
+            );
           
             return new JwtSecurityToken(
                 issuer: _validIssuer,

@@ -23,8 +23,10 @@ namespace OfficeNet.Domain.Entities
         public int? Indent { get; set; }                
         public bool IsApprovedStatus { get; set; }
         public long? CreatedBy { get; set; }
+        [Column(TypeName = "datetime")]
         public DateTime? CreatedOn { get; set; }
         public long?  ModifiedBy { get; set; }
+        [Column(TypeName = "datetime")]
         public DateTime? ModifiedOn { get; set; }
 
     }

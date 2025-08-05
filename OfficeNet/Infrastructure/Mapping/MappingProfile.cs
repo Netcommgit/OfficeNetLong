@@ -18,8 +18,9 @@ namespace OfficeNet.Infrastructure.Mapping
             CreateMap<HelpdeskDepartmentModel, HelpdeskDepartmentDto>();
             CreateMap<HelpdeskCategoryDto, HelpdeskCategoryModel>();
             CreateMap<HelpdeskCategoryModel, HelpdeskCategoryDto>();
-            CreateMap<HelpdeskSubcategoryDto, HelpdeskSubcategoryModel>();
+            CreateMap<HelpdeskSubcategoryDto, HelpdeskSubcategoryModel>(); 
             CreateMap<HelpdeskSubcategoryModel, HelpdeskSubcategoryDto>();
+            CreateMap<HelpDeskDetailDto, HelpDeskDetailModel>().ForMember(dest => dest.AdminUsers, opt => opt.Ignore()); ;
         }
     }
 }
